@@ -1,9 +1,7 @@
-# ── AMI Amazon Linux 2023 la plus récente (auto, région courante) ───
 data "aws_ssm_parameter" "al2023_ami" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
 }
 
-# ── Bucket S3 de déploiement (contourne la limite de 16 Ko du user_data) ─
 resource "aws_s3_bucket" "app" {
   bucket        = "${var.name_prefix}-app-deploy"
   force_destroy = true
@@ -56,7 +54,6 @@ resource "aws_s3_object" "app_js" {
   etag   = filemd5(var.app_js_path)
 }
 
-# ── Policy IAM : permet aux EC2 de lire les fichiers déposés ────────
 resource "aws_iam_role_policy" "app_bucket_read" {
   name = "${var.name_prefix}-app-bucket-read"
   role = var.ec2_role_name
@@ -73,7 +70,6 @@ resource "aws_iam_role_policy" "app_bucket_read" {
   })
 }
 
-# ── EC2 Backend Flask ─────────────────────────────────────────────────
 resource "aws_instance" "backend" {
   ami                    = data.aws_ssm_parameter.al2023_ami.value
   instance_type          = var.instance_type_backend
@@ -99,7 +95,6 @@ resource "aws_instance" "backend" {
   ]
 }
 
-# ── EC2 Frontend Nginx ────────────────────────────────────────────────
 resource "aws_instance" "frontend" {
   ami                    = data.aws_ssm_parameter.al2023_ami.value
   instance_type          = var.instance_type_frontend
@@ -127,7 +122,6 @@ resource "aws_instance" "frontend" {
   ]
 }
 
-# ── IP publique fixe pour le frontend ───────────────────────────────
 resource "aws_eip" "frontend" {
   instance = aws_instance.frontend.id
   domain   = "vpc"

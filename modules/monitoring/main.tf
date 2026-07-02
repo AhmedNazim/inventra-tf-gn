@@ -1,4 +1,3 @@
-# ── SNS Topic + abonnement e-mail ────────────────────────────────────
 resource "aws_sns_topic" "alerts" {
   name = "${var.name_prefix}-alerts"
 
@@ -13,7 +12,6 @@ resource "aws_sns_topic_subscription" "email" {
   endpoint  = var.alert_email
 }
 
-# ── Log group CloudWatch pour le backend ─────────────────────────────
 resource "aws_cloudwatch_log_group" "backend" {
   name              = "/inventra/backend"
   retention_in_days = 7
@@ -23,7 +21,6 @@ resource "aws_cloudwatch_log_group" "backend" {
   }
 }
 
-# ── Alarme : CPU EC2 backend > 80% ───────────────────────────────────
 resource "aws_cloudwatch_metric_alarm" "ec2_cpu_backend" {
   alarm_name          = "${var.name_prefix}-ec2-cpu-backend"
   comparison_operator = "GreaterThanThreshold"
@@ -48,7 +45,6 @@ resource "aws_cloudwatch_metric_alarm" "ec2_cpu_backend" {
   }
 }
 
-# ── Alarme : CPU EC2 frontend > 80% ──────────────────────────────────
 resource "aws_cloudwatch_metric_alarm" "ec2_cpu_frontend" {
   alarm_name          = "${var.name_prefix}-ec2-cpu-frontend"
   comparison_operator = "GreaterThanThreshold"
@@ -73,7 +69,6 @@ resource "aws_cloudwatch_metric_alarm" "ec2_cpu_frontend" {
   }
 }
 
-# ── Alarme : connexions RDS > 50 ─────────────────────────────────────
 resource "aws_cloudwatch_metric_alarm" "rds_connections" {
   alarm_name          = "${var.name_prefix}-rds-connections"
   comparison_operator = "GreaterThanThreshold"

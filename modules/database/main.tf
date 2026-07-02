@@ -1,4 +1,3 @@
-# ── Instance RDS PostgreSQL ──────────────────────────────────────────
 resource "aws_db_instance" "this" {
   identifier     = "${var.name_prefix}-db"
   engine         = "postgres"
@@ -26,9 +25,7 @@ resource "aws_db_instance" "this" {
   }
 }
 
-# ── Paramètre SSM SecureString : URL de connexion complète ─────────
-# Jamais le mot de passe seul en clair dans les outputs — uniquement
-# le path SSM est exposé (voir outputs.tf).
+
 resource "aws_ssm_parameter" "db_url" {
   name        = "/${var.name_prefix}/db_url"
   description = "URL de connexion PostgreSQL complete pour le backend Inventra"
